@@ -12,7 +12,7 @@ public class DescendingPiece : MonoBehaviour
 
 	private IEnumerator DropCoroutine()
 	{
-		while(true)
+		while(TetrisGame.Instance.Started)
 		{
 			yield return new WaitForSeconds(SecondsBetweenDrops);
 

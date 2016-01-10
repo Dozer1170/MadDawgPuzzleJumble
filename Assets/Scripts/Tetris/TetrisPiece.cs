@@ -37,6 +37,14 @@ public class TetrisPiece : MonoBehaviour {
 		}
 	}
 
+	private void Start()
+	{
+		if(TetrisGame.Instance.CheckAndHandleCollisions(0, 0, false))
+		{
+			TetrisGame.Instance.GameOver();
+		}
+	}
+
 	public void TryRotate()
 	{
 		var proposedLayout = new bool[16];

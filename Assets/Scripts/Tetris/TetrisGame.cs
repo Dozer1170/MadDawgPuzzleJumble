@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TetrisGame : MonoBehaviour 
 {
 	public const float PIECE_SIZE = 0.32f;
 	public const float HALF_PIECE_SIZE = 0.16f;
-	public const int BOARD_WIDTH = 10, BOARD_HEIGHT = 15;
+	public const int BOARD_WIDTH = 10, BOARD_HEIGHT = 20;
 	public const float EPSILON = 0.01f;
 
 	public static TetrisGame Instance;
@@ -15,17 +16,19 @@ public class TetrisGame : MonoBehaviour
 	[SerializeField]
 	private GameObject[] _piecePrefabs;
 	[SerializeField]
-	private Transform _nextPieceSpawnTransform;
-	[SerializeField]
 	private float _secondsBetweenVerticalDrops;
 	[SerializeField]
 	private TetrisPlayerController _controller;
+	[SerializeField]
+	private GameObject _gameOverText;
 	[SerializeField]
 	private bool _debug;
 
 	private GameObject[,] _board;
 	private GameObject[,] _gridHeirarchy;
-	private bool _started;
+	private bool _started, _gameOver;
+	public bool Started { get { return _started; } }
+
 	private TetrisPiece _currentPiece, _nextPiece;
 
 	void Awake() 
@@ -41,6 +44,11 @@ public class TetrisGame : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if(_gameOver && _controller.DidTouchScreen())
+		{
+			SceneManager.LoadScene(0);
+		}
+
 		if(!_started && _controller.DidTouchScreen())
 		{
 			StartGame();
@@ -86,17 +94,26 @@ public class TetrisGame : MonoBehaviour
 		MoveNextPieceToTop();
 	}
 
+	public void GameOver()
+	{
+		_gameOverText.SetActive(true);
+		_gameOver = true;
+		Debug.Log("Game Over");
+		DestroyCurrentPiece();
+		DestroyNextUpPiece();
+	}
+
 	private void SpawnNextUpPiece() 
 	{
 		_nextPiece = GameObject.Instantiate(GetRandomPiece()).GetComponent<TetrisPiece>();
-		_nextPiece.transform.position = _nextPieceSpawnTransform.position;
+		_nextPiece.transform.position = new Vector3(BOARD_WIDTH * PIECE_SIZE - PIECE_SIZE, BOARD_HEIGHT * PIECE_SIZE + PIECE_SIZE);
 		_nextPiece.name = "Next Piece";
 	}
 
 	private void MoveNextPieceToTop() 
 	{
 		_currentPiece = _nextPiece;
-		_currentPiece.transform.position = new Vector3(BOARD_WIDTH/2 * PIECE_SIZE, BOARD_HEIGHT * PIECE_SIZE);
+		_currentPiece.transform.position = new Vector3(BOARD_WIDTH/2 * PIECE_SIZE - PIECE_SIZE, BOARD_HEIGHT * PIECE_SIZE - (3 * PIECE_SIZE));
 		_currentPiece.name = "Current Piece";
 
 		_controller.CurrentPiece = _currentPiece;
@@ -109,8 +126,13 @@ public class TetrisGame : MonoBehaviour
 
 	private void DestroyCurrentPiece()
 	{
+		GameObject.Destroy(_currentPiece.gameObject);
 		_controller.CurrentPiece = null;
-		GameObject.Destroy(_currentPiece);
+	}
+
+	private void DestroyNextUpPiece()
+	{
+		GameObject.Destroy(_nextPiece);
 	}
 
 	private GameObject GetRandomPiece() 
