@@ -115,7 +115,7 @@ public class TetrisGame : MonoBehaviour
 
 	private GameObject GetRandomPiece() 
 	{
-		return _piecePrefabs[1]; //_piecePrefabs[Random.Range(0, _piecePrefabs.Length)];
+		return _piecePrefabs[Random.Range(0, _piecePrefabs.Length)];
 	}
 
 	public bool CheckAndHandleCollisions(float xMove, float yMove, bool lockPieceOnCollision = true) 
