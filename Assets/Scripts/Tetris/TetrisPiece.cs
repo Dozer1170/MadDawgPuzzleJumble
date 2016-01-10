@@ -26,7 +26,7 @@ public class TetrisPiece : MonoBehaviour {
 				{
 					var block = GameObject.Instantiate(Resources.Load("Tetris/TetrisBlock")) as GameObject;
 					block.transform.parent = transform;
-					block.transform.localPosition = new Vector3(j * TetrisGame.PIECE_SIZE, i * TetrisGame.PIECE_SIZE);
+					block.transform.localPosition = new Vector3(j * TetrisGame.PIECE_SIZE - TetrisGame.HALF_PIECE_SIZE, i * TetrisGame.PIECE_SIZE - TetrisGame.HALF_PIECE_SIZE);
 
 					var sprite = block.GetComponent<SpriteRenderer>();
 					sprite.color = _blockColor;
