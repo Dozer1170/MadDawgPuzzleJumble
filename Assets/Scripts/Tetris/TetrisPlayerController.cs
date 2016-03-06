@@ -34,7 +34,9 @@ public class TetrisPlayerController : MonoBehaviour
 		Vector2 rval = new Vector2(0, 0);
 		if(Application.platform != RuntimePlatform.IPhonePlayer)
 		{
-			rval = CursorUtils.MouseDeltaPos;
+			var left = Input.GetKeyDown(KeyCode.LeftArrow);
+			var right = Input.GetKeyDown(KeyCode.RightArrow);
+			rval.x = left ? -1 : right ? 1 : 0;
 		}
 		else if(Input.touches.Length > 0)
 		{

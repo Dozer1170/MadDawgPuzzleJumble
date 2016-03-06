@@ -34,6 +34,7 @@ public class TetrisGame : MonoBehaviour
 	void Awake() 
 	{
 		Instance = this;
+
 		_board = new GameObject[BOARD_WIDTH, BOARD_HEIGHT];
 		_gridHeirarchy = new GameObject[BOARD_WIDTH, BOARD_HEIGHT];
 		_started = false;
@@ -96,6 +97,11 @@ public class TetrisGame : MonoBehaviour
 
 	public void GameOver()
 	{
+		if(Score > HighScoresUtil.TetrisHighScore)
+		{
+			HighScoresUtil.TetrisHighScore = Score;
+		}
+
 		_gameOverText.SetActive(true);
 		_gameOver = true;
 		Debug.Log("Game Over");
