@@ -16,6 +16,14 @@ public class Timer
 		_startTime = Time.time;
 	}
 
+    public float CurrentTime 
+    {
+        get 
+        {
+            return Time.time - _startTime;
+        }
+    }
+
 	public bool IsExpired()
 	{
 		return Time.time - _startTime > _timerLength;
