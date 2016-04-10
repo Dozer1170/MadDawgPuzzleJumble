@@ -41,15 +41,14 @@ public class TetrisPlayerController : MonoBehaviour
 	private Vector2 GetDeltaMovement()
 	{
 		Vector2 rval = new Vector2(0, 0);
-		if(Application.platform != RuntimePlatform.IPhonePlayer)
+		
+		var left = Input.GetKey(KeyCode.LeftArrow);
+		var right = Input.GetKey(KeyCode.RightArrow);
+		rval.x = left ? -1 : right ? 1 : 0;
+		
+        if(Input.touches.Length > 0)
 		{
-			var left = Input.GetKey(KeyCode.LeftArrow);
-			var right = Input.GetKey(KeyCode.RightArrow);
-			rval.x = left ? -1 : right ? 1 : 0;
-		}
-		else if(Input.touches.Length > 0)
-		{
-			rval = Input.touches[0].deltaPosition;
+            rval = CurrentPiece.transform.position - new Vector3(Input.touches[0].position.x, Input.touches[0].position.y);
 		}
 
 		rval = new Vector2(rval.x > 0f ? TetrisGame.PIECE_SIZE : rval.x < 0f ? -TetrisGame.PIECE_SIZE : 0f, 0);
