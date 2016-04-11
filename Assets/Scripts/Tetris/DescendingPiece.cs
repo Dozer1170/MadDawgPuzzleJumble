@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DescendingPiece : MonoBehaviour 
 {
-	public float SecondsBetweenDrops { get; set; }
+    public float SecondsBetweenDrops { get; set; }
 
 	void Start()
 	{
