@@ -8,6 +8,7 @@ public class TetrisGame : MonoBehaviour
 	public const float HALF_PIECE_SIZE = 0.16f;
 	public const int BOARD_WIDTH = 10, BOARD_HEIGHT = 20;
 	public const float EPSILON = 0.01f;
+    public const float DRAG_DOWN_THRESOLD = -100f;
 
 	public static TetrisGame Instance;
 
@@ -21,6 +22,10 @@ public class TetrisGame : MonoBehaviour
 	private TetrisPlayerController _controller;
 	[SerializeField]
 	private GameObject _gameOverText;
+    [SerializeField]
+    private AudioClip _highScoreSound;
+    [SerializeField]
+    private AudioSource _audioSource;
 	[SerializeField]
 	private bool _debug;
 
@@ -60,6 +65,7 @@ public class TetrisGame : MonoBehaviour
 	{
 		if(_debug)
 		{
+            #region Debug Board Lines
 			foreach(GameObject boardPiece in _board)
 			{
 				if(boardPiece != null)
@@ -85,6 +91,7 @@ public class TetrisGame : MonoBehaviour
 					Debug.DrawLine(new Vector3(j * PIECE_SIZE + PIECE_SIZE, i * PIECE_SIZE), new Vector3(j * PIECE_SIZE + PIECE_SIZE, i * PIECE_SIZE + PIECE_SIZE), Color.green);
 				}
 			}
+            #endregion
 		}
 	}
 
@@ -99,6 +106,8 @@ public class TetrisGame : MonoBehaviour
 	{
 		if(Score > HighScoresUtil.TetrisHighScore)
 		{
+            _audioSource.clip = _highScoreSound;
+            _audioSource.Play();
 			HighScoresUtil.TetrisHighScore = Score;
 		}
 

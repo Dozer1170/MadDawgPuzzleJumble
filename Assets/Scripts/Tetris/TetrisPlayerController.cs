@@ -7,7 +7,8 @@ public class TetrisPlayerController : MonoBehaviour
 
 	public TetrisPiece CurrentPiece { get; set; }
 	private Timer _moveDownTimer = new Timer(0.1f);
-
+    private int _touchCount = 0;
+    private int _lastDropDownTouchCount = -1;
     private Touch _lastTouch;
     private Vector2 _touchAnchor;
 
@@ -29,6 +30,7 @@ public class TetrisPlayerController : MonoBehaviour
                 if(currentTouch.phase == TouchPhase.Began)
                 {
                     _touchAnchor = currentTouch.position;
+                    _touchCount++;
                 }
 
 
@@ -39,6 +41,7 @@ public class TetrisPlayerController : MonoBehaviour
                     var rowIndex = (int) (worldPos.x / TetrisGame.PIECE_SIZE);
                     var snappedPositionX = rowIndex * TetrisGame.PIECE_SIZE;
                     var deltaX = Mathf.Clamp(snappedPositionX - CurrentPiece.transform.position.x, -TetrisGame.PIECE_SIZE, TetrisGame.PIECE_SIZE);
+                    var deltaY = currentTouch.position.y - _touchAnchor.y;
                     Debug.Log("WorldX: " + worldPos.x + " TouchX: " + currentTouch.position.x + " TouchAnchorX: " + _touchAnchor.x +
                         " DeltaX: " + deltaX + " SnappedPosX: " + snappedPositionX);
                     if(deltaX != 0 && ValidHorizontalMove(deltaX))
@@ -46,6 +49,15 @@ public class TetrisPlayerController : MonoBehaviour
                         CurrentPiece.transform.position += new Vector3(deltaX, 0);
                         Debug.Log("Moved X " + deltaX);
                         _touchAnchor = currentTouch.position;
+                    }
+
+                    if(deltaY < TetrisGame.DRAG_DOWN_THRESOLD && _lastDropDownTouchCount != _touchCount)
+                    {
+                        while(ValidVerticalMove(-TetrisGame.PIECE_SIZE))
+                        {
+                            CurrentPiece.transform.position += new Vector3(0, -TetrisGame.PIECE_SIZE);
+                        }
+                        _lastDropDownTouchCount = _touchCount;
                     }
                 }
 
@@ -64,6 +76,14 @@ public class TetrisPlayerController : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 CurrentPiece.TryRotate();
+            }
+
+            if(Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                while(ValidVerticalMove(-TetrisGame.PIECE_SIZE))
+                {
+                    CurrentPiece.transform.position += new Vector3(0, -TetrisGame.PIECE_SIZE);
+                }
             }
 		}
 	}
